@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package cop4331.client;
+package cop4331.server;
 
 /**
  *
@@ -11,7 +11,8 @@ package cop4331.client;
 public class User {
     private String username;
     private String password;
-    private boolean isSeller;
+    private boolean isSeller; // return true if seller and false if customer
+    
 
     // Constructor
     public User(String username, String password, boolean isSeller) {
@@ -43,5 +44,9 @@ public class User {
 
     public void setSeller(boolean isSeller) {
         this.isSeller = isSeller;
+    }
+    @Override
+    public String toString() {
+        return "User: " + username + ", Role: " + (isSeller ? "Seller" : "Customer");
     }
 }

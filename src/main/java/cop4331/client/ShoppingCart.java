@@ -1,15 +1,13 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package cop4331.client;
-import java.util.HashMap;
+
 import cop4331.server.Product;
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  *
  * @author hayaalfakieh
  */
-
 public class ShoppingCart {
     private HashMap<String, Integer> cartItems; // Product ID -> Quantity
     private double totalCost;
@@ -57,5 +55,21 @@ public class ShoppingCart {
     // Get Total Cost
     public double getTotalCost() {
         return totalCost;
+    }
+
+    // Get Cart Items (New Method)
+    public Map<String, Integer> getCartItems() {
+        return cartItems; // Returns the map of Product IDs and their quantities
+    }
+
+    // Clear Cart (New Method)
+    public void clearCart() {
+        // Restore product quantities to inventory
+        cartItems.forEach((productId, quantity) -> {
+            // Restore the quantity to the Product object (Assumes Product objects are managed externally)
+            System.out.println("Clearing item: " + productId + ", Quantity: " + quantity);
+        });
+        cartItems.clear();
+        totalCost = 0.0;
     }
 }

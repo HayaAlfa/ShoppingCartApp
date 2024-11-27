@@ -9,22 +9,23 @@ package cop4331.server;
  * @author hayaalfakieh
  */
 import java.util.ArrayList;
+import java.util.List;
 
 public class Inventory {
-    private ArrayList<Product> products;
+    private List<Product> products;
 
     // Constructor
     public Inventory() {
         this.products = new ArrayList<>();
     }
 
-    // Add Product
+    // Add a product to the inventory
     public void addProduct(Product product) {
         products.add(product);
         System.out.println(product.getName() + " added to inventory.");
     }
 
-    // Update Product
+    // Update a product's details
     public void updateProduct(String productId, double newPrice, int newQuantity) {
         for (Product product : products) {
             if (product.getProductId().equals(productId)) {
@@ -37,22 +38,18 @@ public class Inventory {
         System.out.println("Product not found in inventory.");
     }
 
-    // Display Inventory
-    public void displayInventory() {
-        System.out.println("Inventory:");
-        for (Product product : products) {
-            System.out.println(product);
-        }
+    // Get all products in the inventory
+    public List<Product> getProducts() {
+        return products;
     }
 
-    // Get Product by ID
+    // Get a product by its ID
     public Product getProduct(String productId) {
         for (Product product : products) {
             if (product.getProductId().equals(productId)) {
                 return product;
             }
         }
-        System.out.println("Product not found.");
         return null;
     }
 }
