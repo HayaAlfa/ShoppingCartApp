@@ -262,6 +262,8 @@ private void showCartScreen() {
 
         productDialog.setVisible(true);
     }
+    
+    
 
     private void checkout() {
         if (cart.getCartItems().isEmpty()) {
@@ -297,6 +299,8 @@ private void showCartScreen() {
         updateTotal();
         populateProducts();
     }
+    
+    
 
     private void updateTotal() {
         totalLabel.setText("TOTAL: $" + cart.getTotalCost());
@@ -307,4 +311,119 @@ private void showCartScreen() {
         cartPanel.revalidate();
         cartPanel.repaint();
     }
+    
+    private void updateInventory() {
+    // Loop through all items in the cart and update the inventory
+    cart.getCartItems().forEach((productId, quantity) -> {
+        Product product = inventory.getProduct(productId);
+        if (product != null) {
+            product.setAvailableQuantity(product.getAvailableQuantity() - quantity);
+        }
+    });
 }
+
+    
+    private void showCheckoutPage() {
+    JDialog checkoutDialog = new JDialog(frame, "Checkout", true);
+    checkoutDialog.setSize(600, 500);
+    checkoutDialog.setLayout(new BorderLayout());
+
+    // Cart Contents Panel
+    JPanel cartContentsPanel = new JPanel(new GridLayout(0, 1, 10, 10));
+    JScrollPane scrollPane = new JScrollPane(cartContentsPanel);
+
+    cart.getCartItems().forEach((productId, quantity) -> {
+        Product product = inventory.getProduct(productId);
+
+        if (product != null) {
+            JPanel cartItemPanel = new JPanel(new GridLayout(1, 3));
+            cartItemPanel.add(new JLabel(product.getName()));
+            cartItemPanel.add(new JLabel("Qty: " + quantity));
+            cartItemPanel.add(new JLabel("Subtotal: $" + (product.getSellingPrice() * quantity)));
+
+            cartContentsPanel.add(cartItemPanel);
+        } else {
+            // Remove unavailable product from cart
+            cart.removeProduct(product);
+        }
+    });
+
+    checkoutDialog.add(scrollPane, BorderLayout.CENTER);
+
+    // Payment Panel
+    JPanel paymentPanel = new JPanel(new GridLayout(3, 2, 10, 10));
+    paymentPanel.setBorder(BorderFactory.createTitledBorder("Payment Information"));
+
+    paymentPanel.add(new JLabel("Card Number:"));
+    JTextField cardNumberField = new JTextField();
+    paymentPanel.add(cardNumberField);
+
+    paymentPanel.add(new JLabel("Expiry Date (MM/YY):"));
+    JTextField expiryField = new JTextField();
+    paymentPanel.add(expiryField);
+
+    paymentPanel.add(new JLabel("CVV:"));
+    JTextField cvvField = new JTextField();
+    paymentPanel.add(cvvField);
+
+    checkoutDialog.add(paymentPanel, BorderLayout.NORTH);
+
+    // Footer with Total and Checkout Button
+    JPanel footerPanel = new JPanel(new BorderLayout());
+    JLabel totalLabel = new JLabel("TOTAL: $" + cart.getTotalCost());
+    JButton confirmButton = new JButton("Confirm Purchase");
+
+    confirmButton.addActionListener(e -> {
+        if (processPayment(cardNumberField.getText(), expiryField.getText(), cvvField.getText())) {
+            updateInventory();
+            JOptionPane.showMessageDialog(checkoutDialog, "Purchase confirmed! Thank you.");
+            cart.clearCart(); // Clear the cart after purchase
+            checkoutDialog.dispose();
+            populateProducts(); // Refresh product list
+        } else {
+            JOptionPane.showMessageDialog(checkoutDialog, "Payment failed. Please try again.");
+        }
+    });
+
+    footerPanel.add(totalLabel, BorderLayout.WEST);
+    footerPanel.add(confirmButton, BorderLayout.EAST);
+    checkoutDialog.add(footerPanel, BorderLayout.SOUTH);
+
+    checkoutDialog.setVisible(true);
+    }
+ 
+    private boolean processPayment(String cardNumber, String expiry, String cvv) {
+    // Validate credit card fields
+    if (cardNumber.isEmpty() || expiry.isEmpty() || cvv.isEmpty()) {
+        JOptionPane.showMessageDialog(frame, "Please fill in all payment details.", "Payment Error", JOptionPane.ERROR_MESSAGE);
+        return false;
+    }
+    
+
+    // Simulate basic validation
+    if (!cardNumber.matches("\\d{16}")) { // Ensure card number has 16 digits
+        JOptionPane.showMessageDialog(frame, "Invalid card number. Please enter a valid 16-digit number.", "Payment Error", JOptionPane.ERROR_MESSAGE);
+        return false;
+    }
+
+    if (!expiry.matches("\\d{2}/\\d{2}")) { // Ensure expiry date is in MM/YY format
+        JOptionPane.showMessageDialog(frame, "Invalid expiry date. Please use MM/YY format.", "Payment Error", JOptionPane.ERROR_MESSAGE);
+        return false;
+    }
+
+    if (!cvv.matches("\\d{3}")) { // Ensure CVV is a 3-digit number
+        JOptionPane.showMessageDialog(frame, "Invalid CVV. Please enter a valid 3-digit number.", "Payment Error", JOptionPane.ERROR_MESSAGE);
+        return false;
+    }
+
+    // Simulate payment processing
+    JOptionPane.showMessageDialog(frame, "Payment processed successfully!", "Payment Success", JOptionPane.INFORMATION_MESSAGE);
+    return true;
+}
+
+    
+    
+}
+
+
+
