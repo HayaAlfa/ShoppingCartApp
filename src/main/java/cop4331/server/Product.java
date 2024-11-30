@@ -14,15 +14,19 @@ public class Product {
     private double invoicePrice;
     private double sellingPrice;
     private int availableQuantity;
+        private String imagePath; 
 
+    
     // Constructor
-    public Product(String productId, String name, String type, double invoicePrice, double sellingPrice, int availableQuantity) {
+    public Product(String productId, String name, String type, double invoicePrice, double sellingPrice, int availableQuantity, String imageslaptopjpg) {
         this.productId = productId;
         this.name = name;
         this.type = type;
         this.invoicePrice = invoicePrice;
         this.sellingPrice = sellingPrice;
         this.availableQuantity = availableQuantity;
+        this.imagePath = imagePath;
+
     }
 
     // Getters and Setters
@@ -74,6 +78,13 @@ public class Product {
         this.availableQuantity = availableQuantity;
     }
 
+     public String getImagePath() {
+        return imagePath;
+    }
+
+    public void setImagePath(String imagePath) {
+        this.imagePath = imagePath;
+    }
     @Override
     public String toString() {
         return "Product ID: " + productId + ", Name: " + name + ", Type: " + type + 

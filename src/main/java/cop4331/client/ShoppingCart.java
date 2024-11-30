@@ -72,4 +72,12 @@ public class ShoppingCart {
         cartItems.clear();
         totalCost = 0.0;
     }
+
+    public void updateProductQuantity(String productId, int newQuantity) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    public void removeProductById(String productId) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
 }

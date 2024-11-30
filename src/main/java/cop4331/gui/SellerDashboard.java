@@ -6,83 +6,86 @@ import cop4331.server.User;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 public class SellerDashboard {
     private JFrame frame;
     private Inventory inventory;
 
-    public SellerDashboard(User user, Inventory inventory) {
+    public SellerDashboard(User seller, Inventory inventory) {
         this.inventory = inventory;
-        initialize(user);
+        initialize(seller);
     }
 
-    private void initialize(User user) {
+    private void initialize(User seller) {
         frame = new JFrame("Seller Dashboard");
-        frame.setSize(600, 500);
+        frame.setSize(800, 600);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setLayout(new BorderLayout());
 
-        // Header Label
-        JLabel welcomeLabel = new JLabel("Welcome, " + user.getUsername() + "!", JLabel.CENTER);
+        // Header
+        JLabel welcomeLabel = new JLabel("Welcome, " + seller.getUsername() + "!", JLabel.CENTER);
+        welcomeLabel.setFont(new Font("Arial", Font.BOLD, 20));
         frame.add(welcomeLabel, BorderLayout.NORTH);
 
-        // Inventory Panel
-        JTextArea inventoryTextArea = new JTextArea();
-        inventoryTextArea.setEditable(false);
-        refreshInventoryDisplay(inventoryTextArea);
+        // Inventory Display
+        JTextArea inventoryArea = new JTextArea();
+        inventoryArea.setEditable(false);
+        refreshInventoryDisplay(inventoryArea);
 
-        JScrollPane scrollPane = new JScrollPane(inventoryTextArea);
+        JScrollPane scrollPane = new JScrollPane(inventoryArea);
         frame.add(scrollPane, BorderLayout.CENTER);
 
-        // Controls Panel
+        // Controls
         JPanel controlPanel = new JPanel();
-        controlPanel.setLayout(new FlowLayout());
-
         JButton addProductButton = new JButton("Add Product");
         JButton updateProductButton = new JButton("Update Product");
-        JButton refreshButton = new JButton("Refresh Inventory");
 
         controlPanel.add(addProductButton);
         controlPanel.add(updateProductButton);
-        controlPanel.add(refreshButton);
         frame.add(controlPanel, BorderLayout.SOUTH);
 
-        // Action Listeners
-        addProductButton.addActionListener(e -> addProduct());
-        updateProductButton.addActionListener(e -> updateProduct());
-        refreshButton.addActionListener(e -> refreshInventoryDisplay(inventoryTextArea));
+        // Add Product Button Action
+        addProductButton.addActionListener(e -> addProduct(inventoryArea));
+
+        // Update Product Button Action
+        updateProductButton.addActionListener(e -> updateProduct(inventoryArea));
 
         frame.setVisible(true);
     }
 
-    private void addProduct() {
+    private void refreshInventoryDisplay(JTextArea inventoryArea) {
+        inventoryArea.setText("Current Inventory:\n");
+        for (Product product : inventory.getProducts()) {
+            inventoryArea.append(product.toString() + "\n");
+        }
+    }
+
+    private void addProduct(JTextArea inventoryArea) {
         String productId = JOptionPane.showInputDialog(frame, "Enter Product ID:");
         String name = JOptionPane.showInputDialog(frame, "Enter Product Name:");
         String type = JOptionPane.showInputDialog(frame, "Enter Product Type:");
-        double invoicePrice = Double.parseDouble(JOptionPane.showInputDialog(frame, "Enter Invoice Price:"));
         double sellingPrice = Double.parseDouble(JOptionPane.showInputDialog(frame, "Enter Selling Price:"));
         int quantity = Integer.parseInt(JOptionPane.showInputDialog(frame, "Enter Quantity:"));
+        String imagePath = JOptionPane.showInputDialog(frame, "Enter Image Path:");
 
-        Product newProduct = new Product(productId, name, type, invoicePrice, sellingPrice, quantity);
-        inventory.addProduct(newProduct);
+        Product product = new Product(productId, name, type, 0, sellingPrice, quantity, imagePath);
+        inventory.addProduct(product);
+
+        refreshInventoryDisplay(inventoryArea);
     }
 
-    private void updateProduct() {
+    private void updateProduct(JTextArea inventoryArea) {
         String productId = JOptionPane.showInputDialog(frame, "Enter Product ID to Update:");
         double newPrice = Double.parseDouble(JOptionPane.showInputDialog(frame, "Enter New Price:"));
         int newQuantity = Integer.parseInt(JOptionPane.showInputDialog(frame, "Enter New Quantity:"));
 
-        inventory.updateProduct(productId, newPrice, newQuantity);
+        Product product = inventory.getProduct(productId);
+        if (product != null) {
+            product.setSellingPrice(newPrice);
+            product.setAvailableQuantity(newQuantity);
+            refreshInventoryDisplay(inventoryArea);
+        } else {
+            JOptionPane.showMessageDialog(frame, "Product not found!");
+        }
     }
-
-    private void refreshInventoryDisplay(JTextArea inventoryTextArea) {
-    inventoryTextArea.setText(""); // Clear existing text
-    inventoryTextArea.append("Current Inventory:\n");
-    for (Product product : inventory.getProducts()) {  // Using getProducts here
-        inventoryTextArea.append(product.toString() + "\n");
-    }
-}
-
 }
