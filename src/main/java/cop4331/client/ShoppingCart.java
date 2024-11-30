@@ -1,5 +1,6 @@
 package cop4331.client;
 
+import cop4331.server.Inventory;
 import cop4331.server.Product;
 import java.util.HashMap;
 import java.util.Map;
@@ -11,11 +12,15 @@ import java.util.Map;
 public class ShoppingCart {
     private HashMap<String, Integer> cartItems; // Product ID -> Quantity
     private double totalCost;
+    private Inventory inventory; // Reference to inventory
+
 
     // Constructor
-    public ShoppingCart() {
+    public ShoppingCart(Inventory inventory) {
         this.cartItems = new HashMap<>();
         this.totalCost = 0.0;
+        this.inventory = inventory; // Assign inventory instance
+
     }
 
     // Add Product to Cart
@@ -73,11 +78,21 @@ public class ShoppingCart {
         totalCost = 0.0;
     }
 
-    public void updateProductQuantity(String productId, int newQuantity) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    public void updateProductQuantity(String productId, int quantity) {
+    if (cartItems.containsKey(productId)) {
+        cartItems.put(productId, quantity); // Update the quantity in the cart
+        recalculateTotal(); // Update the total cost
+    }
+}
+
+    private void recalculateTotal() {
+    totalCost = cartItems.entrySet().stream()
+            .mapToDouble(entry -> {
+                String productId = entry.getKey();
+                int quantity = entry.getValue();
+                Product product = inventory.getProduct(productId);
+                return product != null ? product.getSellingPrice() * quantity : 0;
+            }).sum();
     }
 
-    public void removeProductById(String productId) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
 }
