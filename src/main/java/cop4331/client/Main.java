@@ -23,9 +23,7 @@ public class Main {
 
         // Initialize login manager with default users
         LoginManager loginManager = new LoginManager();
-        loginManager.registerUser("customer1", "password123", false); // Add a testing customer user
-        loginManager.registerUser("seller1", "password123", true);   // Add a testing seller user
-
+        
         // Start the Login GUI
         new LoginGUI(loginManager, inventory);
     }
