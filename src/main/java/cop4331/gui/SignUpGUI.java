@@ -33,7 +33,7 @@ public class SignUpGUI {
 
         // Create components
         JPanel panel = new JPanel();
-        panel.setLayout(new GridLayout(5, 2));
+        panel.setLayout(new GridLayout(6, 2));
 
         JLabel usernameLabel = new JLabel("Username:");
         usernameField = new JTextField();
@@ -55,6 +55,7 @@ public class SignUpGUI {
         rolePanel.add(customerButton);
 
         JButton signUpButton = new JButton("Sign Up");
+        JButton loginButton = new JButton("Login");
 
         messageLabel = new JLabel("", JLabel.CENTER);
 
@@ -69,6 +70,8 @@ public class SignUpGUI {
         panel.add(rolePanel);
         panel.add(new JLabel()); // Empty placeholder
         panel.add(signUpButton);
+        panel.add(new JLabel()); // Empty placeholder
+        panel.add(loginButton);
 
         // Add panel and message label to frame
         frame.add(panel, BorderLayout.CENTER);
@@ -79,6 +82,14 @@ public class SignUpGUI {
             @Override
             public void actionPerformed(ActionEvent e) {
                 handleSignUp();
+            }
+        });
+
+        loginButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                frame.dispose();
+                new LoginGUI(loginManager, inventory);
             }
         });
 
