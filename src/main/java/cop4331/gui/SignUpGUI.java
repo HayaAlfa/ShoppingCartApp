@@ -8,6 +8,11 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+/**
+ *
+ * @author leandro alfonso
+ */
+
 public class SignUpGUI {
     private JFrame frame;
     private JTextField usernameField;

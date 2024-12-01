@@ -6,7 +6,7 @@ package cop4331.gui;
 
 /**
  *
- * @author leandro alfonso
+ * @author hayaalfakieh & leandro alfonso
  */
 
 import cop4331.server.Inventory;
