@@ -366,6 +366,7 @@ public class CustomerDashboard {
                 updateInventory();
                 JOptionPane.showMessageDialog(checkoutDialog, "Purchase confirmed! Thank you.");
                 cart.clearCart(); // Clear the cart after purchase
+                updateTotal();
                 checkoutDialog.dispose();
                 populateProducts(); // Refresh product list
             } else {
