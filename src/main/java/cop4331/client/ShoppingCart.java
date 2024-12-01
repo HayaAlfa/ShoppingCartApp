@@ -7,8 +7,9 @@ import java.util.Map;
 
 /**
  *
- * @author hayaalfakieh
+ * @author hayaalfakieh & leandro alfonso
  */
+
 public class ShoppingCart {
     private HashMap<String, Integer> cartItems; // Product ID -> Quantity
     private double totalCost;
@@ -32,7 +33,6 @@ public class ShoppingCart {
 
         cartItems.put(product.getProductId(), cartItems.getOrDefault(product.getProductId(), 0) + quantity);
         totalCost += product.getSellingPrice() * quantity;
-        product.setAvailableQuantity(product.getAvailableQuantity() - quantity);
         System.out.println(quantity + " x " + product.getName() + " added to cart.");
     }
 
@@ -41,7 +41,6 @@ public class ShoppingCart {
         if (cartItems.containsKey(product.getProductId())) {
             int quantity = cartItems.remove(product.getProductId());
             totalCost -= product.getSellingPrice() * quantity;
-            product.setAvailableQuantity(product.getAvailableQuantity() + quantity);
             System.out.println(product.getName() + " removed from cart.");
         } else {
             System.out.println("Product not found in cart.");
@@ -79,20 +78,19 @@ public class ShoppingCart {
     }
 
     public void updateProductQuantity(String productId, int quantity) {
-    if (cartItems.containsKey(productId)) {
-        cartItems.put(productId, quantity); // Update the quantity in the cart
-        recalculateTotal(); // Update the total cost
+        if (cartItems.containsKey(productId)) {
+            cartItems.put(productId, quantity); // Update the quantity in the cart
+            recalculateTotal(); // Update the total cost
+        }
     }
-}
 
     private void recalculateTotal() {
-    totalCost = cartItems.entrySet().stream()
-            .mapToDouble(entry -> {
-                String productId = entry.getKey();
-                int quantity = entry.getValue();
-                Product product = inventory.getProduct(productId);
-                return product != null ? product.getSellingPrice() * quantity : 0;
-            }).sum();
+        totalCost = cartItems.entrySet().stream()
+        .mapToDouble(entry -> {
+            String productId = entry.getKey();
+            int quantity = entry.getValue();
+            Product product = inventory.getProduct(productId);
+            return product != null ? product.getSellingPrice() * quantity : 0;
+        }).sum();
     }
-
 }

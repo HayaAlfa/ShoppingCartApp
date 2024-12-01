@@ -2,6 +2,6 @@
 
 - Haya Alfakieh & Leandro Alfonso
 
-# How to Run Application
+# How to Run Shopping Cart Application
 
 - Run the Main.java file inside the client folder.

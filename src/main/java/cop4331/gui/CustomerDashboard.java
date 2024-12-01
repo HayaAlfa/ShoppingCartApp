@@ -118,138 +118,137 @@ public class CustomerDashboard {
     }
 
     private void showCartScreen() {
-    JDialog cartDialog = new JDialog(frame, "Shopping Cart", true);
-    cartDialog.setSize(800, 500);
-    cartDialog.setLayout(new BorderLayout());
+        JDialog cartDialog = new JDialog(frame, "Shopping Cart", true);
+        cartDialog.setSize(800, 500);
+        cartDialog.setLayout(new BorderLayout());
 
-    JPanel cartPanel = new JPanel(new GridLayout(0, 1, 10, 10));
-    JScrollPane scrollPane = new JScrollPane(cartPanel);
+        JPanel cartPanel = new JPanel(new GridLayout(0, 1, 10, 10));
+        JScrollPane scrollPane = new JScrollPane(cartPanel);
 
-    cart.getCartItems().forEach((productId, quantity) -> {
-        Product product = inventory.getProduct(productId);
+        cart.getCartItems().forEach((productId, quantity) -> {
+            Product product = inventory.getProduct(productId);
 
-        if (product != null) {
-            JPanel cartItemPanel = new JPanel(new GridBagLayout());
-            cartItemPanel.setBorder(BorderFactory.createLineBorder(Color.GRAY));
-            GridBagConstraints gbc = new GridBagConstraints();
-            gbc.fill = GridBagConstraints.HORIZONTAL;
-            gbc.insets = new Insets(5, 5, 5, 5);
+            if (product != null) {
+                JPanel cartItemPanel = new JPanel(new GridBagLayout());
+                cartItemPanel.setBorder(BorderFactory.createLineBorder(Color.GRAY));
+                GridBagConstraints gbc = new GridBagConstraints();
+                gbc.fill = GridBagConstraints.HORIZONTAL;
+                gbc.insets = new Insets(5, 5, 5, 5);
 
-            // Product Image
-            gbc.gridx = 0;
-            gbc.gridy = 0;
-            gbc.gridheight = 2;
-            JLabel imageLabel = new JLabel();
-            ImageIcon productImage = new ImageIcon(
-                new ImageIcon(product.getImagePath()) // Ensure Product class has getImagePath() method
-                    .getImage()
-                    .getScaledInstance(50, 50, Image.SCALE_SMOOTH)
-            );
-            imageLabel.setIcon(productImage);
-            cartItemPanel.add(imageLabel, gbc);
+                // Product Image
+                gbc.gridx = 0;
+                gbc.gridy = 0;
+                gbc.gridheight = 2;
+                JLabel imageLabel = new JLabel();
+                ImageIcon productImage = new ImageIcon(
+                    new ImageIcon(product.getImagePath()) // Ensure Product class has getImagePath() method
+                        .getImage()
+                        .getScaledInstance(50, 50, Image.SCALE_SMOOTH)
+                );
+                imageLabel.setIcon(productImage);
+                cartItemPanel.add(imageLabel, gbc);
 
-            // Product Details
-            gbc.gridx = 1;
-            gbc.gridy = 0;
-            gbc.gridheight = 1;
-            gbc.anchor = GridBagConstraints.WEST;
-            cartItemPanel.add(new JLabel("<html><b>" + product.getName() + "</b><br>" +
-                    "Price: $" + product.getSellingPrice() + "</html>"), gbc);
+                // Product Details
+                gbc.gridx = 1;
+                gbc.gridy = 0;
+                gbc.gridheight = 1;
+                gbc.anchor = GridBagConstraints.WEST;
+                cartItemPanel.add(new JLabel("<html><b>" + product.getName() + "</b><br>" +
+                        "Price: $" + product.getSellingPrice() + "</html>"), gbc);
 
-            // Quantity Controls
-            JPanel quantityPanel = new JPanel(new FlowLayout());
-            JButton decrementButton = new JButton("-");
-            JLabel quantityLabel = new JLabel(String.valueOf(quantity));
-            JButton incrementButton = new JButton("+");
+                // Quantity Controls
+                JPanel quantityPanel = new JPanel(new FlowLayout());
+                JButton decrementButton = new JButton("-");
+                JLabel quantityLabel = new JLabel(String.valueOf(quantity));
+                JButton incrementButton = new JButton("+");
 
-            // Action for Decrement
-            decrementButton.addActionListener(e -> {
-                int currentQuantity = Integer.parseInt(quantityLabel.getText());
-                if (currentQuantity > 1) {
-                    int newQuantity = currentQuantity - 1;
+                // Action for Decrement
+                decrementButton.addActionListener(e -> {
+                    int currentQuantity = Integer.parseInt(quantityLabel.getText());
+                    if (currentQuantity > 1) {
+                        int newQuantity = currentQuantity - 1;
 
-                    quantityLabel.setText(String.valueOf(newQuantity));
-                    cart.updateProductQuantity(productId, newQuantity);
+                        quantityLabel.setText(String.valueOf(newQuantity));
+                        cart.updateProductQuantity(productId, newQuantity);
+                        updateCartTotal(cartPanel);
+                    }else {
+                        JOptionPane.showMessageDialog(cartDialog, "Quantity cannot be less than 1.");
+                    }
+                });
+
+                // Action for Increment
+                incrementButton.addActionListener(e -> {
+                    int currentQuantity = Integer.parseInt(quantityLabel.getText());
+                    if (currentQuantity < product.getAvailableQuantity()) {
+                        int newQuantity = currentQuantity + 1;
+                        quantityLabel.setText(String.valueOf(newQuantity));
+                        cart.updateProductQuantity(productId, newQuantity); 
+                        updateCartTotal(cartPanel); 
+                    } else {
+                        JOptionPane.showMessageDialog(cartDialog,
+                                "Only " + product.getAvailableQuantity() + " units available!");
+                    }
+                });
+
+                quantityPanel.add(decrementButton);
+                quantityPanel.add(quantityLabel);
+                quantityPanel.add(incrementButton);
+
+                gbc.gridx = 2;
+                gbc.gridy = 0;
+                cartItemPanel.add(quantityPanel, gbc);
+
+                // Subtotal
+                gbc.gridx = 3;
+                gbc.gridy = 0;
+                JLabel subtotalLabel = new JLabel("Subtotal: $" + (product.getSellingPrice() * quantity));
+                cartItemPanel.add(subtotalLabel, gbc);
+
+                // Remove Button
+                gbc.gridx = 4;
+                gbc.gridy = 0;
+                JButton removeButton = new JButton("X");
+                removeButton.addActionListener(e -> {
+                    cart.removeProduct(product);
+                    cartPanel.remove(cartItemPanel);
                     updateCartTotal(cartPanel);
-                }else {
-                    JOptionPane.showMessageDialog(cartDialog, "Quantity cannot be less than 1.");
-                }
-            });
+                    cartPanel.revalidate();
+                    cartPanel.repaint();
+                });
+                cartItemPanel.add(removeButton, gbc);
 
-            // Action for Increment
-            incrementButton.addActionListener(e -> {
-                int currentQuantity = Integer.parseInt(quantityLabel.getText());
-                if (currentQuantity < product.getAvailableQuantity()) {
-                    int newQuantity = currentQuantity + 1;
-                    quantityLabel.setText(String.valueOf(newQuantity));
-                    cart.updateProductQuantity(productId, newQuantity); 
-                    updateCartTotal(cartPanel); 
-                } else {
-                    JOptionPane.showMessageDialog(cartDialog,
-                            "Only " + product.getAvailableQuantity() + " units available!");
-                }
-            });
+                cartPanel.add(cartItemPanel);
+            }
+        });
 
-            quantityPanel.add(decrementButton);
-            quantityPanel.add(quantityLabel);
-            quantityPanel.add(incrementButton);
+        cartDialog.add(scrollPane, BorderLayout.CENTER);
 
-            gbc.gridx = 2;
-            gbc.gridy = 0;
-            cartItemPanel.add(quantityPanel, gbc);
+        // Footer Panel
+        JPanel footerPanel = new JPanel(new BorderLayout());
+        JLabel totalCartLabel = new JLabel("TOTAL: $" + cart.getTotalCost(), JLabel.LEFT);
+        JButton saveButton = new JButton("Save Changes");
+        JButton checkoutButton = new JButton("Proceed to Checkout");
 
-            // Subtotal
-            gbc.gridx = 3;
-            gbc.gridy = 0;
-            JLabel subtotalLabel = new JLabel("Subtotal: $" + (product.getSellingPrice() * quantity));
-            cartItemPanel.add(subtotalLabel, gbc);
-
-            // Remove Button
-            gbc.gridx = 4;
-            gbc.gridy = 0;
-            JButton removeButton = new JButton("X");
-            removeButton.addActionListener(e -> {
-                cart.removeProduct(product);
-                cartPanel.remove(cartItemPanel);
-                updateCartTotal(cartPanel);
-                cartPanel.revalidate();
-                cartPanel.repaint();
-            });
-            cartItemPanel.add(removeButton, gbc);
-
-            cartPanel.add(cartItemPanel);
-        }
-    });
-
-    cartDialog.add(scrollPane, BorderLayout.CENTER);
-
-    // Footer Panel
-    JPanel footerPanel = new JPanel(new BorderLayout());
-    JLabel totalCartLabel = new JLabel("TOTAL: $" + cart.getTotalCost(), JLabel.LEFT);
-    JButton saveButton = new JButton("Save Changes");
-    JButton checkoutButton = new JButton("Proceed to Checkout");
-
-    // Save Changes Listener
-    saveButton.addActionListener(e -> {
-        JOptionPane.showMessageDialog(cartDialog, "All changes saved successfully!");
-        cartDialog.dispose(); // Close the cart dialog
-    });
+        // Save Changes Listener
+        saveButton.addActionListener(e -> {
+            JOptionPane.showMessageDialog(cartDialog, "All changes saved successfully!");
+            cartDialog.dispose(); // Close the cart dialog
+        });
 
 
-    // Checkout Listener
-    checkoutButton.addActionListener(e -> {
-        cartDialog.dispose();
-        showCheckoutPage();
-    });
+        // Checkout Listener
+        checkoutButton.addActionListener(e -> {
+            cartDialog.dispose();
+            showCheckoutPage();
+        });
 
-    footerPanel.add(totalCartLabel, BorderLayout.WEST);
-    footerPanel.add(saveButton, BorderLayout.CENTER);
-    footerPanel.add(checkoutButton, BorderLayout.EAST);
-    cartDialog.add(footerPanel, BorderLayout.SOUTH);
+        footerPanel.add(totalCartLabel, BorderLayout.WEST);
+        footerPanel.add(saveButton, BorderLayout.CENTER);
+        footerPanel.add(checkoutButton, BorderLayout.EAST);
+        cartDialog.add(footerPanel, BorderLayout.SOUTH);
 
-    cartDialog.setVisible(true);
-}
-
+        cartDialog.setVisible(true);
+    }
 
     private void showProductDetailsPopup(Product product) {
         JDialog productDialog = new JDialog(frame, "Product Details", true);
