@@ -21,13 +21,15 @@ public class LoginManager {
         users.put("seller1", new User("seller1", "password123", true));
     }
 
-    // Method to register a new user (optional for testing purposes)
-    public void register(String username, String password, boolean isSeller) {
+    // Method to register a new user (unused for now -> will be used later)
+    public boolean register(String username, String password, boolean isSeller) {
         if (users.containsKey(username)) {
             System.out.println("Username already exists. Please choose a different username.");
+            return false;
         } else {
             users.put(username, new User(username, password, isSeller));
             System.out.println("User registered successfully: " + username);
+            return true;
         }
     }
 

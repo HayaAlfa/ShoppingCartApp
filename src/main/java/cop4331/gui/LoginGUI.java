@@ -4,7 +4,11 @@
  */
 package cop4331.gui;
 
-import cop4331.gui.CustomerDashboard;
+/**
+ *
+ * @author leandro alfonso
+ */
+
 import cop4331.server.Inventory;
 import cop4331.server.LoginManager;
 import cop4331.server.User;
@@ -36,7 +40,7 @@ public class LoginGUI {
 
         // Create components
         JPanel panel = new JPanel();
-        panel.setLayout(new GridLayout(3, 2));
+        panel.setLayout(new GridLayout(4, 2));
 
         JLabel usernameLabel = new JLabel("Username:");
         usernameField = new JTextField();
@@ -45,6 +49,7 @@ public class LoginGUI {
         passwordField = new JPasswordField();
 
         JButton loginButton = new JButton("Login");
+        JButton signUpButton = new JButton("Sign Up");
 
         messageLabel = new JLabel("", JLabel.CENTER);
 
@@ -55,6 +60,8 @@ public class LoginGUI {
         panel.add(passwordField);
         panel.add(new JLabel()); // Empty placeholder
         panel.add(loginButton);
+        panel.add(new JLabel()); // Empty placeholder
+        panel.add(signUpButton);
 
         // Add panel and message label to frame
         frame.add(panel, BorderLayout.CENTER);
@@ -65,6 +72,14 @@ public class LoginGUI {
             @Override
             public void actionPerformed(ActionEvent e) {
                 handleLogin();
+            }
+        });
+
+        signUpButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                frame.dispose(); // Close the login window
+                new SignUpGUI(loginManager, inventory);
             }
         });
 
@@ -82,10 +97,10 @@ public class LoginGUI {
 
             if (user.isSeller()) {
                 // Redirect to Seller Dashboard
-                new SellerDashboard(user, inventory);
+                new SellerDashboard(user, loginManager, inventory);
             } else {
                 // Redirect to Customer Dashboard
-                new CustomerDashboard(user, inventory);
+                new CustomerDashboard(user, loginManager, inventory);
             }
         } else {
             messageLabel.setText("Invalid username or password.");

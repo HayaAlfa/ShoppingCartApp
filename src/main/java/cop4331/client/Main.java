@@ -4,12 +4,14 @@
  */
 package cop4331.client;
 
-import cop4331.gui.CustomerDashboard;
+/**
+ *
+ * @author hayaalfakieh & leandro alfonso
+ */
+
 import cop4331.gui.LoginGUI;
-import cop4331.gui.SellerDashboard;
 import cop4331.server.Inventory;
 import cop4331.server.LoginManager;
-import cop4331.server.User;
 import cop4331.server.Product;
 
 public class Main {
@@ -21,14 +23,12 @@ public class Main {
 
         // Initialize login manager with default users
         LoginManager loginManager = new LoginManager();
-        loginManager.registerUser("customer1", "password123", false); // Add a default customer
-        loginManager.registerUser("seller1", "password123", true);   // Add a default seller
+        loginManager.registerUser("customer1", "password123", false); // Add a testing customer user
+        loginManager.registerUser("seller1", "password123", true);   // Add a testing seller user
 
         // Start the Login GUI
         new LoginGUI(loginManager, inventory);
-        
     }
-    
     
 }
 

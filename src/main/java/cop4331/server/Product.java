@@ -5,7 +5,7 @@
 package cop4331.server;
 /**
  *
- * @author hayaalfakieh
+ * @author hayaalfakieh & leandro alfonso
  */
 public class Product {
     private String productId;
@@ -14,11 +14,11 @@ public class Product {
     private double invoicePrice;
     private double sellingPrice;
     private int availableQuantity;
-        private String imagePath; 
+    private String imagePath; 
 
     
     // Constructor
-    public Product(String productId, String name, String type, double invoicePrice, double sellingPrice, int availableQuantity, String imageslaptopjpg) {
+    public Product(String productId, String name, String type, double invoicePrice, double sellingPrice, int availableQuantity, String imagePath) {
         this.productId = productId;
         this.name = name;
         this.type = type;
@@ -33,7 +33,8 @@ public class Product {
     public String getProductId() {
         return productId;
     }
-
+    
+    // Ideally this would be removed and add functionality that sets the ProductId automatically
     public void setProductId(String productId) {
         this.productId = productId;
     }
