@@ -15,10 +15,11 @@ public class Product {
     private double sellingPrice;
     private int availableQuantity;
     private String imagePath; 
+    private String sellerUsername;
 
     
     // Constructor
-    public Product(String productId, String name, String type, double invoicePrice, double sellingPrice, int availableQuantity, String imagePath) {
+    public Product(String productId, String name, String type, double invoicePrice, double sellingPrice, int availableQuantity, String imagePath, String sellerUsername) {
         this.productId = productId;
         this.name = name;
         this.type = type;
@@ -26,6 +27,7 @@ public class Product {
         this.sellingPrice = sellingPrice;
         this.availableQuantity = availableQuantity;
         this.imagePath = imagePath;
+        this.sellerUsername = sellerUsername;
 
     }
 
@@ -86,6 +88,15 @@ public class Product {
     public void setImagePath(String imagePath) {
         this.imagePath = imagePath;
     }
+
+    public String getSellerUsername() {
+        return sellerUsername;
+    }
+
+    public void setSellerUsername(String sellerUsername) {
+        this.sellerUsername = sellerUsername;
+    }
+
     @Override
     public String toString() {
         return "Product ID: " + productId + ", Name: " + name + ", Type: " + type + 

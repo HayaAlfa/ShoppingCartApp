@@ -23,9 +23,11 @@ public class SellerDashboard {
     private Inventory inventory;
     private JPanel inventoryPanel;
     private LoginManager loginManager;
+    private User seller;
 
     public SellerDashboard(User seller, LoginManager loginManager, Inventory inventory) {
         this.inventory = inventory;
+        this.seller = seller;
         this.loginManager = loginManager;
         initialize(seller);
     }
@@ -64,7 +66,7 @@ public class SellerDashboard {
         JScrollPane scrollPane = new JScrollPane(inventoryPanel);
         frame.add(scrollPane, BorderLayout.CENTER);
 
-        populateProducts();
+        populateProducts(seller.getUsername());
 
         // Controls
         JPanel controlPanel = new JPanel();
@@ -134,10 +136,10 @@ public class SellerDashboard {
                     return;
                 }
     
-                Product newProduct = new Product(productId, name, type, 0, sellingPrice, quantity, imagePath);
+                Product newProduct = new Product(productId, name, type, 0, sellingPrice, quantity, imagePath, seller.getUsername());
                 inventory.addProduct(newProduct);
     
-                populateProducts(); // Refresh product list
+                populateProducts(seller.getUsername()); // Refresh product list
                 productDialog.dispose();
             } catch (NumberFormatException ex) {
                 JOptionPane.showMessageDialog(productDialog, "Invalid input. Please enter valid numbers for price and quantity.", "Error", JOptionPane.ERROR_MESSAGE);
@@ -150,40 +152,42 @@ public class SellerDashboard {
         productDialog.setLocationRelativeTo(frame);
         productDialog.setVisible(true);
     }
-    
 
-    private void populateProducts() {
+    private void populateProducts(String username) {
         inventoryPanel.removeAll();
-
+    
+        // Filter products based on the specified username
         List<Product> products = inventory.getProducts();
         for (Product product : products) {
-            JPanel productCard = new JPanel(new BorderLayout());
-            productCard.setBorder(BorderFactory.createLineBorder(Color.GRAY));
-
-            JLabel detailsLabel = new JLabel("<html>" +
-                    "<b>Product ID:</b> " + product.getProductId() + "<br>" +
-                    "<b>Name:</b> " + product.getName() + "<br>" +
-                    "<b>Type:</b> " + product.getType() + "<br>" +
-                    "<b>Price:</b> $" + product.getSellingPrice() + "<br>" +
-                    "<b>Available:</b> " + product.getAvailableQuantity() + "<br>" +
-                    "</html>");
-
-            productCard.add(detailsLabel, BorderLayout.CENTER);
-
-            productCard.addMouseListener(new MouseAdapter() {
-                @Override
-                public void mouseClicked(MouseEvent e) {
-                    showEditPopup(product);
-                }
-            });
-
-            inventoryPanel.add(productCard);
+            if (product.getSellerUsername().equals(username)) { // Only include products by the specific username
+                JPanel productCard = new JPanel(new BorderLayout());
+                productCard.setBorder(BorderFactory.createLineBorder(Color.GRAY));
+    
+                JLabel detailsLabel = new JLabel("<html>" +
+                        "<b>Product ID:</b> " + product.getProductId() + "<br>" +
+                        "<b>Name:</b> " + product.getName() + "<br>" +
+                        "<b>Type:</b> " + product.getType() + "<br>" +
+                        "<b>Price:</b> $" + product.getSellingPrice() + "<br>" +
+                        "<b>Available:</b> " + product.getAvailableQuantity() + "<br>" +
+                        "</html>");
+    
+                productCard.add(detailsLabel, BorderLayout.CENTER);
+    
+                productCard.addMouseListener(new MouseAdapter() {
+                    @Override
+                    public void mouseClicked(MouseEvent e) {
+                        showEditPopup(product);
+                    }
+                });
+    
+                inventoryPanel.add(productCard);
+            }
         }
-
+    
         inventoryPanel.revalidate();
         inventoryPanel.repaint();
     }
-
+    
     private void showEditPopup(Product product) {
         JDialog productDialog = new JDialog(frame, "Edit Product", true);
         productDialog.setSize(400, 300);
@@ -230,7 +234,7 @@ public class SellerDashboard {
                 product.setAvailableQuantity(Integer.parseInt(quantityField.getText()));
                 product.setImagePath(imagePathField.getText());
     
-                populateProducts(); // Refresh product list
+                populateProducts(seller.getUsername()); // Refresh product list
                 productDialog.dispose();
             } catch (NumberFormatException ex) {
                 JOptionPane.showMessageDialog(productDialog, "Invalid input. Please enter valid numbers for price and quantity.", "Error", JOptionPane.ERROR_MESSAGE);

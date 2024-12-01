@@ -18,8 +18,8 @@ public class Main {
     public static void main(String[] args) {
         
         Inventory inventory = new Inventory();
-        inventory.addProduct(new Product("P001", "Laptop", "Electronics", 500.0, 800.0, 10, "Images/Laptop.jpg"));
-        inventory.addProduct(new Product("P002", "Phone", "Electronics", 200.0, 400.0, 20, "Images/Phone.png"));
+        inventory.addProduct(new Product("P001", "Laptop", "Electronics", 500.0, 800.0, 10, "Images/Laptop.jpg", "seller1"));
+        inventory.addProduct(new Product("P002", "Phone", "Electronics", 200.0, 400.0, 20, "Images/Phone.png", "seller1"));
 
         // Initialize login manager with default users
         LoginManager loginManager = new LoginManager();

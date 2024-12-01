@@ -89,33 +89,35 @@ public class CustomerDashboard {
 
     private void populateProducts() {
         productPanel.removeAll();
-
+    
         List<Product> products = inventory.getProducts();
         for (Product product : products) {
-            JPanel productCard = new JPanel(new BorderLayout());
-            productCard.setBorder(BorderFactory.createLineBorder(Color.GRAY));
-
-            JLabel detailsLabel = new JLabel("<html>" +
-                    "<b>Name:</b> " + product.getName() + "<br>" +
-                    "<b>Price:</b> $" + product.getSellingPrice() + "<br>" +
-                    "<b>Available:</b> " + product.getAvailableQuantity() + "<br>" +
-                    "</html>");
-
-            productCard.add(detailsLabel, BorderLayout.CENTER);
-
-            productCard.addMouseListener(new MouseAdapter() {
-                @Override
-                public void mouseClicked(MouseEvent e) {
-                    showProductDetailsPopup(product);
-                }
-            });
-
-            productPanel.add(productCard);
+            if (product.getAvailableQuantity() > 0) { // Check availability
+                JPanel productCard = new JPanel(new BorderLayout());
+                productCard.setBorder(BorderFactory.createLineBorder(Color.GRAY));
+    
+                JLabel detailsLabel = new JLabel("<html>" +
+                        "<b>Name:</b> " + product.getName() + "<br>" +
+                        "<b>Price:</b> $" + product.getSellingPrice() + "<br>" +
+                        "<b>Available:</b> " + product.getAvailableQuantity() + "<br>" +
+                        "</html>");
+    
+                productCard.add(detailsLabel, BorderLayout.CENTER);
+    
+                productCard.addMouseListener(new MouseAdapter() {
+                    @Override
+                    public void mouseClicked(MouseEvent e) {
+                        showProductDetailsPopup(product);
+                    }
+                });
+    
+                productPanel.add(productCard);
+            }
         }
-
+    
         productPanel.revalidate();
         productPanel.repaint();
-    }
+    }    
 
     private void showCartScreen() {
         JDialog cartDialog = new JDialog(frame, "Shopping Cart", true);
